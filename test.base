@@ -1,2 +1,12 @@
 logical a.
 logical b.
+integer v.
+void a.
+tuple Addr { integer doorNum. integer zipCode. }.
+tuple Student {
+    integer id.
+    integer age.
+    tuple Addr addr.
+}.
+tuple Student raj.
+tuple Student jack.

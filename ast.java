@@ -277,6 +277,13 @@ class TupleDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		doIndent(p, indent);
+		p.print("tuple ");
+		myId.unparse(p, indent + 1);
+		p.print(" {\n");
+		myDeclList.unparse(p, indent + 1);
+		doIndent(p, indent);
+		p.print("}\n");
     }
 
     // 2 children
@@ -305,6 +312,8 @@ class IntegerNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		//doIndent(p, indent);
+		p.print("integer");
     }
 }
 
@@ -313,6 +322,7 @@ class VoidNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		p.print("void");
     }
 }
 
@@ -322,6 +332,8 @@ class TupleNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		p.print("tuple ");
+		myId.unparse(p, 0);
     }
 	
 	// 1 child
