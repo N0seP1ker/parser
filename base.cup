@@ -82,6 +82,9 @@ non terminal TypeNode         type;
 non terminal IdNode           id;
 non terminal LinkedList  	  tupleBody;
 non terminal TupleDeclNode    tupleDecl;
+non terminal FormalsListNode  formals;
+non terminal LinkedList		  formalsList;
+non terminal FormalDeclNode	  formalDecl;
  
  
 /* NOTE: Add precedence and associativity declarations here */
@@ -154,5 +157,30 @@ tupleBody		::= tupleBody:tb varDecl:v
 				{: LinkedList<DeclNode> list = new LinkedList<DeclNode>();
 				   list.add(v);
 				   RESULT = list;
+				:}
+				;
+
+formals			::= LCURLY RCURLY
+				{: LinkedList<FormalDeclNode> emptyList = new LinkedList<FormalDeclNode>();
+				   RESULT = new FormalsListNode(emptyList);
+				:}
+				|  LCURLY formalsList:fl RCURLY
+				{: RESULT = new FormalsListNode(fl);
+				:}
+				;
+
+formalsList		::= formalDecl:fd
+				{: LinkedList<FormalDeclNode> list = new LinkedList<FormalDeclNode>();
+				   list.add(fd);
+				   RESULT = list;
+				:}
+				| formalDecl:fd COMMA formalsList:fl
+				{: fl.addFirst(fd);
+				   RESULT = fl;
+				:}
+				;
+
+formalDecl		::= type:t id:i
+				{: RESULT = new FormalDeclNode(t, i);
 				:}
 				;

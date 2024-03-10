@@ -10,3 +10,5 @@ tuple Student {
 }.
 tuple Student raj.
 tuple Student jack.
+
+{}
