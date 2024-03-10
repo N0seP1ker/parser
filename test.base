@@ -10,5 +10,6 @@ tuple Student {
 }.
 tuple Student raj.
 tuple Student jack.
-
-{}
+void function {integer a} [
+	integer d.
+]
