@@ -58,7 +58,7 @@ import java.util.*;
 //       IdNode              --- none ---
 //       IntLitNode          --- none ---
 //       StrLitNode          --- none ---
-//       TupleAccessNode     ExpNode, IdNode
+//       TupleAccessExpNode     ExpNode, IdNode
 //       AssignExpNode       ExpNode, ExpNode
 //       CallExpNode         IdNode, ExpListNode
 //       UnaryExpNode        ExpNode
@@ -277,7 +277,7 @@ class FormalDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		doIndent(p, indent);
+	doIndent(p, indent);
         myType.unparse(p, 0);
         p.print(" ");
         myId.unparse(p, 0);
@@ -589,6 +589,9 @@ class TupleAccessExpNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+	loc.unparse(p, 0);
+	p.print(":");
+	myId.unparse(p, 0);
     }
 
     // 2 children
