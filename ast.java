@@ -161,6 +161,15 @@ class StmtListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		Iterator it = myStmts.iterator();
+        try {
+            while (it.hasNext()) {
+                ((StmtNode)it.next()).unparse(p, indent);
+			}
+        } catch (NoSuchElementException ex) {
+            System.err.println("unexpected NoSuchElementException in StmtListNode.print");
+            System.exit(-1);
+        }
     }
 
     // list of children (StmtNodes)
@@ -211,6 +220,13 @@ class FctnBodyNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		doIndent(indent);
+		p.print("[\n");
+		
+		declList.unparse(indent + 5);
+		stmtList.unparse(indent + 5);
+		
+		p.print("]\n");
     }
 
     // 2 children
@@ -261,6 +277,11 @@ class FctnDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		myType.unparse(p, indent);
+		p.print(" ");
+		myId.unparse(p, indent);
+		myFormalsList.unparse(p, indent);
+		myBody.unparse(p, indent);
     }
 
     // 4 children
@@ -371,6 +392,7 @@ class AssignStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		myAssign.unparse(p, ident);
     }
 
     // 1 child
@@ -383,6 +405,8 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		myExp.unparse(p, ident);
+		p.print("++");
     }
 
     // 1 child
@@ -395,6 +419,8 @@ class PostDecStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		myExp.unparse(p, ident);
+		p.print("--");
     }
 
     // 1 child
@@ -409,6 +435,15 @@ class IfStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		p.print(doIndent(indent) + "if ");
+		
+		myExp.unparse(p, 0);
+		p.print(" [\n");
+
+		myDeclList.unparse(p, indent + 5);
+		myStmtList.unparse(p, indent + 5);
+	
+		p.print"\n" + (doIndent(indent) + "]");
     }
 
     // 3 children
@@ -429,6 +464,26 @@ class IfElseStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		// if part
+		doIndent(indent);
+		p.print("if ");
+
+        exp.unparse(p, 0);
+		p.print(" [\n");
+
+        myThenDeclList.unparse(p, indent + 5);
+        myThenStmtList.unparse(p, indent + 5);
+
+        p.print"\n" + (doIndent(indent) + "]");
+		
+		// else part
+		doIndent(indent);
+		p.print("else [\n");
+
+		myElseDeclList.unparse(p, indent + 5);
+		myElseStmtList.unparse(p, indent + 5);		
+
+		p.print(doIndent(ident) + "]");
     }
 
     // 5 children
@@ -447,6 +502,15 @@ class WhileStmtNode extends StmtNode {
     }
 	
     public void unparse(PrintWriter p, int indent) {
+		doIndent(indent);
+		p.print("while ");
+		myExp.unparse(p, 0); 
+		p.print("[\n");
+
+		myDeclList.unparse(p, indent + 5);
+		myStmtList.unparse(p, indent + 5);
+
+		p.print("\n]");
     }
 
     // 3 children
@@ -461,6 +525,9 @@ class ReadStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		doIndent(indent);
+		p.print("read >> ");
+		exp.unparse(p, 0);
     }
 
     // 1 child (actually can only be an IdNode or a TupleAccessNode)
@@ -473,6 +540,9 @@ class WriteStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		doIndent(indent);
+		p.print("write << ");
+		myExp.unparse(p, 0);
     }
 
     // 1 child
@@ -485,6 +555,7 @@ class CallStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		myCall.unparse(p, indent);
     }
 
     // 1 child
@@ -497,6 +568,9 @@ class ReturnStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+		doIndent(indent);
+		p.print("return ");
+		myExp.unparse(p, 0);
     }
 
     // 1 child
@@ -623,6 +697,17 @@ class CallExpNode extends ExpNode {
 
     // **** unparse ****
     public void unparse(PrintWriter p, int indent) {
+		// id ()
+		// id ( actualList )
+
+		doIndent(indent);
+		myId.unparse(p, 0);
+		p.print(" (");
+		
+		if (myExpList != null)
+			myExpList.unparse(p, indent);
+		
+		p.print(")\n");
     }
 
     // 2 children

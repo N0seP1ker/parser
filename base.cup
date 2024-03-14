@@ -87,7 +87,11 @@ non terminal LinkedList		  formalsList;
 non terminal FormalDeclNode	  formalDecl;
 non terminal FctnDeclNode	  fctnDecl;
 non terminal FctnBodyNode	  fctnBody;
-non terminal LinknedList	  varDeclList; 
+non terminal LinkedList	      varDeclList;
+non terminal LinkedList		  stmtList;
+non terminal CallStmtNode     stmt;
+non terminal CallExpNode	  fctnCall;
+non termianl LinkedList       actualList; 
  
 /* NOTE: Add precedence and associativity declarations here */
 
@@ -119,12 +123,9 @@ decl            ::= varDecl:v
 				|   tupleDecl: t
 				{: RESULT = t;
 				:}
-				|	fctnDecl: f
-				{:	RESULT = f;
-				:}
-                ;
+				;
 
-varDeclList		::= varDeclList:vdl varDecl:vd
+varDeclList	    ::= varDeclList:vdl varDecl:vd
 				{:	vdl.add(vd);
 					RESULT = vdl;
 				:}
@@ -180,8 +181,8 @@ tupleBody		::= tupleBody:tb varDecl:v
 				;
 
 formals			::= LCURLY RCURLY
-				{: LinkedList<FormalDeclNode> emptyList = new LinkedList<FormalDeclNode>();
-				   RESULT = new FormalsListNode(emptyList);
+				{: LinkedList<FormalDeclNode> empty = new LinkedList<FormalDeclNode>();
+				   RESULT = new FormalsListNode(empty);
 				:}
 				|  LCURLY formalsList:fl RCURLY
 				{: RESULT = new FormalsListNode(fl);
@@ -205,6 +206,81 @@ formalDecl		::= type:t id:i
 				;
 
 fctnBody		::= LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
-				{: RESULT = new FctnBodyNode(vdl, sl);
+				{:	StmtListNode sln = new StmtListNode(sl);
+					RESULT = new FctnBodyNode(vdl, sln);
+				:}
+				;
+
+stmtList        ::= stmtList:sl stmt:s
+				{: sl.add(s);
+				   RESULT = sl;
+				:}
+                | /* epsilon */
+				{: RESULT = new LinkedList<StmtNode>;
+				:}
+                ;
+
+stmt			::= assignExp:ae DOT
+				{: RESULT = AssignStmtNode(ae);
+				:}
+				| fctnCall:fc DOT
+				{: RESULT = new CallStmtNode(fc);
+				:}
+				| loc:l PLUSPLUS DOT 
+				{: RESULT = new PostIncStmtNode(l);
+				:}
+				| loc:l MINUSMINUS DOT
+				{: RESULT = new PostDecStmtNode(l);
+				:}
+				| IF exp:e LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
+				{:	DeclListNode dList = new DeclListNode(vdl);
+					StmtListNode sList = new StmtListNode(sl);
+					RESULT = new IfStmtNode(exp, dList, sList);
+				:}
+				| IF exp:e LSQBRACKET varDeclList:vdl1 stmtList:sl1 RSQBRACKET ELSE LSQBRACKET varDeclList:vdl2 stmtList:sl2 RSQBRACKET
+				{: DeclListNode dList1 = new DeclListNode(vdl1);
+				   StmtListNode sList1 = new StmtListNode(sl1);
+				   DeclListNode dList2 = new DeclListNode(vdl2);
+				   StmtListNode sList2 = new StmtListNode(sl2);
+			
+				   RESULT = new IfElseStmtNode(e, dList1, sList1, dList2, sList2);
+				:}
+				| WHILE exp:e LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
+				{: DeclListNode dList = new DeclListNode(vdl);
+				   StmtListNode sList = new StmtListNode(sl);
+
+				   RESULT = new WhileStmtNode(e, dList, sList);
+				:}
+				| READ INPUTOP loc:l DOT
+				{: RESULT = new ReadStmtNode(l);
+				:}
+				| WRITE OUTPUTOP exp:e DOT
+				{: RESULT = new WriteStmtNode(e);
+				:}
+				| RETURN exp:e DOT
+				{: RESULT = new ReturnStmtNode(e);
+				:}
+				| RETURN
+				{: RESULT = new ReturnStmtNode(null); 
+				:}
+				;
+
+fctnCall		::=	id:i LPAREN RPAREN
+				{:	RESULT = new CallExpNode(id);
+				:}
+				|	id:i LPAREN actualList:actl RPAREN
+				{:	ExpListNode eln = new ExpListNode(actl);
+					RESULT = new CallExpNode(i, eln);
+				:}
+				;
+
+actualList		::= exp:expr
+				{: LinkedList<ExpNode> expNodeList = new LinkedList<ExpNode>();
+				   expNodeList.add(expr);
+				   RESULT = expNodeList;
+				:}
+				| actualList:actl COMMA exp:expr
+				{: actl.add(expr);
+				   RESULT = actl;
 				:}
 				;
