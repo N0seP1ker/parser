@@ -517,6 +517,7 @@ class TrueNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+	p.print("TRUE");
     }
 
     private int myLineNum;
@@ -530,6 +531,7 @@ class FalseNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+	p.print("FALSE");
     }
 
     private int myLineNum;
@@ -560,6 +562,7 @@ class IntLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+	p.print(myIntVal);
     }
 
     private int myLineNum;
@@ -575,6 +578,7 @@ class StringLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+	p.print(myStrVal);
     }
 
     private int myLineNum;

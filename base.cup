@@ -216,3 +216,26 @@ loc		::= id:i
 		{: RESULT = new TupleAccessExpNode(l, i);
 		}:
 		;
+
+term		::= loc:lo
+		{: RESULT = lo;
+		:}
+		| TRUE
+		{: RESULT = new TrueNode();
+		:}
+		| FALSE
+		{: RESULT = new FalseNode();
+		:}
+		| INTLITERAL
+                {: RESULT = new IntLitNode();
+                :}
+		| STRLITERAL
+                {: RESULT = new StringLitNode();
+                :}
+		| LPAREN exp:e RPAREN
+                {: RESULT = e;
+                :}
+		| fctnCall:fn
+                {: RESULT = fn;
+                :}
+		;
