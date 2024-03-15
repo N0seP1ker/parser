@@ -4,11 +4,14 @@ logical a.
 integer v.
 void a.
 
-!! Testing tuples
+
+!! Testing varDecl
 !! TUPLE id id DOT
 tuple a b.
 tuple b c.
 tuple id1 id2.
+tuple Student raj.
+tuple Student jack.
 
 
 !! Test fctnDecl
@@ -16,24 +19,45 @@ tuple id1 id2.
 integer a {} []
 void a {integer a, void b, logical c} []
 integer c {} [integer a. void b. logical c.]
-logical d {} [e=f=g. e(). z(a + d, e <= e, d >= e). a:b:c=d:e:f=e/e. z:y:x++. e--.]
+void function {integer a} [ integer d.]
+integer func2 {} []
+logical d {} [e=f=g. e(). z(a + d, e <= e, d >= e). a:b:c=d:e:f=e/e. z:y:x++. a:be--.]
 void e {integer b, void a, logical c} [if a [logical c. return.] if b [void d. return i.] else [logical c. read >> in:field. write << out * a.]]
 
 
-tuple Addr { integer doorNum. integer zipCode. }.
-tuple Student { integer id. integer age. tuple Addr addr.}.
-tuple Student raj.
-tuple Student jack.
-
-!! testing functions
-void function {integer a} [	integer d.]
-integer func2 {} []
-
-!! testing out if else, if, else
+!! Testing if, if else, while
 integer testWhileInIfElse {} [if b == -1 [ x = 4+3*5-y. while c [ y = y*2+x. ] ] else [ x = 0. ]]
 void testWhile {} [while a == 1 [ x = 4+3.]]
 void testIf {} [if a == 2 [ y =y+2*1.]]
 
-!! testing fctn calls
-!!void noParamFunction {} [ myFunc() ]
-!!logical paramFunction {} [ myFunc2 (a, b) ]
+
+!! Testing tupleDecl
+!! TUPLE id LCURLY tupleBody RCURLY DOT
+tuple Addr { integer doorNum. integer zipCode. }.
+tuple Student { integer id. integer age. tuple Addr addr.}.
+
+
+!! Testing nested if/ifelse/while
+integer testNestedIf {} [if a == 1 [ if b == 1 [ if c == 1 [integer a. b = y*2+x.] ] ] else [ a = 0. ]]
+void testNextWhile {} [while a == 1 [ while x = 4+3 [ a++. x--.]]]
+void testIfWhile {} [if a == 2 [ while a < 0 [ a--.]]]
+
+
+!! Testing fctnCall
+void noParamFunction {} [ myFunc(). ]
+logical paramFunction {} [ myFunc2 (a, b). ]
+
+
+!! Testing fctnCall within if
+logical testFctnCallIf {} [if f() [g(). if f(a ~= b, ~c, -123123, -"sflsaj", -(110 | 010 & a & "hello")) [ax++.]]]
+
+
+!! Testing if all DOT gets printed
+integer a.
+tuple b c.
+tuple d { void e. }.
+logical f {} [ a=b. func(). a++. b--. read >> c. write << d. return a * b. return.]
+
+
+!! Testing exps and terms
+logical func {} [return a+a. return a-a. return a*a. return a/a. return a=a. return a~=a. return a>a. return a>=a. return a<a. return a<=a. return a&a. return a|a. return ~a. return -a. return true. return false. return 5. return "abc". return (a+a). return f(b+c, d+f). return f(f(), a()).]
