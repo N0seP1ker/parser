@@ -1,18 +1,24 @@
-
+!! testing logical, integer, void declarations
 logical a.
-logical b.
 integer v.
 void a.
+tuple id1 id2.
+
+!! testing tuples
 tuple Addr { integer doorNum. integer zipCode. }.
-tuple Student {
-    integer id.
-    integer age.
-    tuple Addr addr.
-}.
+tuple Student { integer id. integer age. tuple Addr addr.}.
 tuple Student raj.
 tuple Student jack.
-void function {integer a} [
-	integer d.
-]
 
-!!afkjd:asldfjk:asdfvasc12
+!! testing functions
+void function {integer a} [	integer d.]
+integer func2 {} []
+
+!! testing out if else, if, else
+integer testWhileInIfElse {} [if b == -1 [ x = 4+3*5-y. while c [ y = y*2+x. ] ] else [ x = 0. ]]
+void testWhile {} [while a == 1 [ x = 4+3.]]
+void testIf {} [if a == 2 [ y =y+2*1.]]
+
+!! testing fctn calls
+!!void noParamFunction {} [ myFunc() ]
+!!logical paramFunction {} [ myFunc2 (a, b) ]

@@ -156,26 +156,26 @@ varDeclList		::= varDeclList:vdl varDecl:vd
 varDecl         ::= type:t id:i DOT
                 {: RESULT = new VarDeclNode(t, i, VarDeclNode.NON_TUPLE);
                 :}
-		|  TUPLE id:id1 id:id2 DOT
-		{: RESULT = new VarDeclNode(new TupleNode(id1), id2, 2);
-		:}
+				|  TUPLE id:id1 id:id2 DOT
+				{: RESULT = new VarDeclNode(new TupleNode(id1), id2, 2);
+				:}
                 ;
 
-fctnDecl	::= type:t id:i formals:fm fctnBody:fb
-		{: RESULT = new FctnDeclNode(t, i, fm, fb); 
-		:}
-		;
+fctnDecl		::= type:t id:i formals:fm fctnBody:fb
+				{: RESULT = new FctnDeclNode(t, i, fm, fb); 
+				:}
+				;
 
 type            ::= LOGICAL
                 {: RESULT = new LogicalNode();
                 :}
-		|  INTEGER
-		{: RESULT = new IntegerNode();
-		:}
-		|  VOID
-		{: RESULT = new VoidNode();
-		:}
-		;
+				|  INTEGER
+				{: RESULT = new IntegerNode();
+				:}
+				|  VOID
+				{: RESULT = new VoidNode();
+				:}
+				;
 
 id              ::= ID:i
                 {: RESULT = new IdNode(i.lineNum, i.charNum, i.idVal);
@@ -336,57 +336,57 @@ term			::= loc:l
                 :}
 				;
 
-assignExp	::= loc:lo ASSIGN exp:e
-		{: RESULT = new AssignExpNode(lo, e);
-		:}
-		;
+assignExp		::= loc:lo ASSIGN exp:e
+				{: RESULT = new AssignExpNode(lo, e);
+				:}
+				;
 
-exp		::= assignExp:exp
-		{: RESULT = exp;
-		:}
-		| exp:e1 PLUS exp:e2
-		{: RESULT = new PlusNode(e1, e2);
-		:}
-		| exp:e1 MINUS exp:e2
+exp				::= assignExp:exp
+				{: RESULT = exp;
+				:}
+				| exp:e1 PLUS exp:e2
+				{: RESULT = new PlusNode(e1, e2);
+				:}
+				| exp:e1 MINUS exp:e2
                 {: RESULT = new MinusNode(e1, e2);
                 :}
-		| exp:e1 TIMES exp:e2
+				| exp:e1 TIMES exp:e2
                 {: RESULT = new TimesNode(e1, e2);
                 :}
-		| exp:e1 DIVIDE exp:e2
+				| exp:e1 DIVIDE exp:e2
                 {: RESULT = new DivideNode(e1, e2);
                 :}	
-		| exp:e1 EQUALS exp:e2
+				| exp:e1 EQUALS exp:e2
                 {: RESULT = new EqualsNode(e1, e2);
                 :}
-		| exp:e1 NOTEQUALS exp:e2
+				| exp:e1 NOTEQUALS exp:e2
                 {: RESULT = new NotEqualsNode(e1, e2);
                 :}
-		| exp:e1 GREATER exp:e2
+				| exp:e1 GREATER exp:e2
                 {: RESULT = new GreaterNode(e1, e2);
                 :}
-		| exp:e1 GREATEREQ exp:e2
+				| exp:e1 GREATEREQ exp:e2
                 {: RESULT = new GreaterEqNode(e1, e2);
                 :}
-		| exp:e1 LESS exp:e2
+				| exp:e1 LESS exp:e2
                 {: RESULT = new LessNode(e1, e2);
                 :}
-		| exp:e1 LESSEQ exp:e2
+				| exp:e1 LESSEQ exp:e2
                 {: RESULT = new LessEqNode(e1, e2);
                 :}
-		| exp:e1 AND exp:e2
+				| exp:e1 AND exp:e2
                 {: RESULT = new AndNode(e1, e2);
                 :}
-		| exp:e1 OR exp:e2
+				| exp:e1 OR exp:e2
                 {: RESULT = new OrNode(e1, e2);
                 :}
-		| NOT exp:e1
+				| NOT exp:e1
                 {: RESULT = new NotNode(e1);
                 :}
-		| MINUS term:t1
-                {: RESULT = new UnaryMinusNode(t1);
+				| MINUS term:t1
+				{: RESULT = new UnaryMinusNode(t1);
                 :}
-		| term:t1
-		{: RESULT = t1;
-		:}
-		;
+				| term:t1
+				{: RESULT = t1;
+				:}
+				;
