@@ -182,21 +182,21 @@ id              ::= ID:i
                 ;
 
 
-tupleDecl	::= TUPLE id:i LCURLY tupleBody:tb RCURLY DOT
-		{: RESULT = new TupleDeclNode(i, new DeclListNode(tb));
-		:}
-		;
+tupleDecl		::= TUPLE id:i LCURLY tupleBody:tb RCURLY DOT
+				{: RESULT = new TupleDeclNode(i, new DeclListNode(tb));
+				:}
+				;
 
-tupleBody	::= tupleBody:tb varDecl:v
-		{: tb.add(v);
-		   RESULT = tb;
-		:}
-		|  varDecl:v
-		{: LinkedList<DeclNode> list = new LinkedList<DeclNode>();
-		   list.add(v);
-		   RESULT = list;
-		:}
-		;
+tupleBody		::= tupleBody:tb varDecl:v
+				{: tb.add(v);
+					RESULT = tb;
+				:}
+				|  varDecl:v
+				{: LinkedList<DeclNode> list = new LinkedList<DeclNode>();
+					list.add(v);
+					RESULT = list;
+				:}
+				;
 
 formals			::= LCURLY RCURLY
 				{: LinkedList<FormalDeclNode> empty = new LinkedList<FormalDeclNode>();
@@ -207,21 +207,21 @@ formals			::= LCURLY RCURLY
 				:}
 				;
 
-formalsList	::= formalDecl:fd
-		{: LinkedList<FormalDeclNode> list = new LinkedList<FormalDeclNode>();
-		   list.add(fd);
-		   RESULT = list;
-		:}
-		| formalDecl:fd COMMA formalsList:fl
-		{: fl.addFirst(fd);
-		   RESULT = fl;
-		:}
-		;
+formalsList		::= formalDecl:fd
+				{:  LinkedList<FormalDeclNode> list = new LinkedList<FormalDeclNode>();
+					list.add(fd);
+					RESULT = list;
+				:}
+				| formalDecl:fd COMMA formalsList:fl
+				{:  fl.addFirst(fd);
+					RESULT = fl;
+				:}
+				;
 
-formalDecl	::= type:t id:i
-		{: RESULT = new FormalDeclNode(t, i);
-		:}
-		;
+formalDecl		::= type:t id:i
+				{: RESULT = new FormalDeclNode(t, i);
+				:}
+				;
 
 fctnBody		::= LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
 				{:	StmtListNode sln = new StmtListNode(sl);
@@ -240,7 +240,7 @@ stmtList        ::= stmtList:sl stmt:s
                 ;
 
 stmt			::= assignExp:ae DOT
-				{: RESULT = AssignStmtNode(ae);
+				{: RESULT = new AssignStmtNode(ae);
 				:}
 				| fctnCall:fc DOT
 				{: RESULT = new CallStmtNode(fc);
@@ -254,7 +254,7 @@ stmt			::= assignExp:ae DOT
 				| IF exp:e LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
 				{:	DeclListNode dList = new DeclListNode(vdl);
 					StmtListNode sList = new StmtListNode(sl);
-					RESULT = new IfStmtNode(exp, dList, sList);
+					RESULT = new IfStmtNode(e, dList, sList);
 				:}
 				| IF exp:e LSQBRACKET varDeclList:vdl1 stmtList:sl1 RSQBRACKET ELSE LSQBRACKET varDeclList:vdl2 stmtList:sl2 RSQBRACKET
 				{: DeclListNode dList1 = new DeclListNode(vdl1);
@@ -285,7 +285,7 @@ stmt			::= assignExp:ae DOT
 				;
 
 fctnCall		::=	id:i LPAREN RPAREN
-				{:	RESULT = new CallExpNode(id);
+				{:	RESULT = new CallExpNode(i);
 				:}
 				|	id:i LPAREN actualList:actl RPAREN
 				{:	ExpListNode eln = new ExpListNode(actl);
@@ -304,36 +304,36 @@ actualList		::= exp:expr
 				:}
 				;
 
-loc		::= id:i
-		{: RESULT = i;
-		:}
-		| loc:l COLON id:i
-		{: RESULT = new TupleAccessExpNode(l, i);
-		:}
-		;
+loc				::= id:i
+				{: RESULT = i;
+				:}
+				| loc:l COLON id:i
+				{: RESULT = new TupleAccessExpNode(l, i);
+				:}
+				;
 
-term	::= loc:l
-		{: RESULT = l;
-		:}
-		| TRUE
-		{: RESULT = new TrueNode();
-		:}
-		| FALSE
-		{: RESULT = new FalseNode();
-		:}
-		| INTLITERAL
-                {: RESULT = new IntLitNode();
+term			::= loc:l
+				{: RESULT = l;
+				:}
+				| TRUE
+				{: RESULT = new TrueNode();
+				:}
+				| FALSE
+				{: RESULT = new FalseNode();
+				:}
+				| INTLITERAL:i
+                {: RESULT = new IntLitNode(i.lineNum, i.charNum, i.intVal);
                 :}
-		| STRLITERAL
-                {: RESULT = new StringLitNode();
+				| STRLITERAL:s
+                {: RESULT = new StringLitNode(s.lineNum, s.charNum, s.strVal);
                 :}
-		| LPAREN exp:e RPAREN
+				| LPAREN exp:e RPAREN
                 {: RESULT = e;
                 :}
-		| fctnCall:fn
+				| fctnCall:fn
                 {: RESULT = fn;
                 :}
-		;
+				;
 
 assignExp	::= loc:lo ASSIGN exp:e
 		{: RESULT = new AssignExpNode(lo, e);
