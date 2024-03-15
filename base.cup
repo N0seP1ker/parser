@@ -105,12 +105,8 @@ precedence left AND;
 precedence nonassoc EQUALS, NOTEQUALS, GREATER, GREATEREQ, LESS, LESSEQ;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
-precedence left PLUSPLUS, MINUSMINUS;
 precedence nonassoc NOT;
-precedence nonassoc TRUE, FALSE, ID;
-precedence nonassoc INTLITERAL, STRLITERAL;
-precedence left LPAREN;
-precedence nonassoc COLON;
+precedence left COLON;
 
 start with program;
 
@@ -280,7 +276,7 @@ stmt			::= assignExp:ae DOT
 				| RETURN exp:e DOT
 				{: RESULT = new ReturnStmtNode(e);
 				:}
-				| RETURN
+				| RETURN DOT
 				{: RESULT = new ReturnStmtNode(null); 
 				:}
 				;

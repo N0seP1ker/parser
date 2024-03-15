@@ -1,10 +1,25 @@
-!! testing logical, integer, void declarations
+!! Test varDecl
+!! type id DOT
 logical a.
 integer v.
 void a.
+
+!! Testing tuples
+!! TUPLE id id DOT
+tuple a b.
+tuple b c.
 tuple id1 id2.
 
-!! testing tuples
+
+!! Test fctnDecl
+!! type id formals fctnbody
+integer a {} []
+void a {integer a, void b, logical c} []
+integer c {} [integer a. void b. logical c.]
+logical d {} [e=f=g. e(). z(a + d, e <= e, d >= e). a:b:c=d:e:f=e/e. z:y:x++. e--.]
+void e {integer b, void a, logical c} [if a [logical c. return.] if b [void d. return i.] else [logical c. read >> in:field. write << out * a.]]
+
+
 tuple Addr { integer doorNum. integer zipCode. }.
 tuple Student { integer id. integer age. tuple Addr addr.}.
 tuple Student raj.
