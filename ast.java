@@ -532,6 +532,7 @@ class ReadStmtNode extends StmtNode {
 		doIndent(p, indent);
 		p.print("read >> ");
 		myExp.unparse(p, 0);
+		p.print(".\n");
     }
 
     // 1 child (actually can only be an IdNode or a TupleAccessNode)
@@ -547,6 +548,7 @@ class WriteStmtNode extends StmtNode {
 		doIndent(p, indent);
 		p.print("write << ");
 		myExp.unparse(p, 0);
+		p.print(".\n");
     }
 
     // 1 child
@@ -574,7 +576,8 @@ class ReturnStmtNode extends StmtNode {
     public void unparse(PrintWriter p, int indent) {
 		doIndent(p, indent);
 		p.print("return ");
-		myExp.unparse(p, 0);
+		if(myExp != null) myExp.unparse(p, 0);
+		p.print(".");
     }
 
     // 1 child
