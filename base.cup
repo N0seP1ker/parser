@@ -89,12 +89,27 @@ non terminal FctnDeclNode	  fctnDecl;
 non terminal FctnBodyNode	  fctnBody;
 non terminal LinkedList	      varDeclList;
 non terminal LinkedList		  stmtList;
-non terminal CallStmtNode     stmt;
+non terminal StmtNode         stmt;
 non terminal CallExpNode	  fctnCall;
-non termianl LinkedList       actualList; 
+non terminal LinkedList       actualList; 
+non terminal AssignExpNode	  assignExp;
+non terminal ExpNode		  loc;
+non terminal ExpNode		  exp;
+non terminal ExpNode		  term;
  
 /* NOTE: Add precedence and associativity declarations here */
 
+precedence right ASSIGN;
+precedence left OR;
+precedence left AND;
+precedence nonassoc EQUALS, NOTEQUALS, GREATER, GREATEREQ, LESS, LESSEQ, COLON;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left PLUSPLUS, MINUSMINUS;
+precedence nonassoc NOT;
+precedence nonassoc TRUE, FALSE, ID;
+precedence nonassoc INTLITERAL, STRLITERAL;
+precedence left LPAREN;
 
 start with program;
 
@@ -133,7 +148,7 @@ varDeclList		::= varDeclList:vdl varDecl:vd
 				    RESULT = vdl;
 				:}
 				| /* epsilon */
-				{:	RESULT = new LinkedList<varDeclNode>();
+				{:	RESULT = new LinkedList<VarDeclNode>();
 				:}
 				;
 
@@ -210,7 +225,8 @@ formalDecl	::= type:t id:i
 
 fctnBody		::= LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
 				{:	StmtListNode sln = new StmtListNode(sl);
-					RESULT = new FctnBodyNode(vdl, sln);
+					DeclListNode dcl = new DeclListNode(vdl);
+					RESULT = new FctnBodyNode(dcl, sln);
 				:}
 				;
 
@@ -219,7 +235,7 @@ stmtList        ::= stmtList:sl stmt:s
 				   RESULT = sl;
 				:}
                 | /* epsilon */
-				{: RESULT = new LinkedList<StmtNode>;
+				{: RESULT = new LinkedList<StmtNode>();
 				:}
                 ;
 
@@ -293,11 +309,11 @@ loc		::= id:i
 		:}
 		| loc:l COLON id:i
 		{: RESULT = new TupleAccessExpNode(l, i);
-		}:
+		:}
 		;
 
-term		::= loc:lo
-		{: RESULT = lo;
+term	::= loc:l
+		{: RESULT = l;
 		:}
 		| TRUE
 		{: RESULT = new TrueNode();
@@ -320,7 +336,7 @@ term		::= loc:lo
 		;
 
 assignExp	::= loc:lo ASSIGN exp:e
-		{: RESULT = new AssignExpNode(lo, e);;
+		{: RESULT = new AssignExpNode(lo, e);
 		:}
 		;
 

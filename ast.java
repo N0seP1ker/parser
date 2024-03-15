@@ -220,11 +220,11 @@ class FctnBodyNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		doIndent(indent);
+		doIndent(p, indent);
 		p.print("[\n");
 		
-		declList.unparse(indent + 5);
-		stmtList.unparse(indent + 5);
+		myDeclList.unparse(p, indent + 5);
+		myStmtList.unparse(p, indent + 5);
 		
 		p.print("]\n");
     }
@@ -298,7 +298,7 @@ class FormalDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-	doIndent(p, indent);
+		doIndent(p, indent);
         myType.unparse(p, 0);
         p.print(" ");
         myId.unparse(p, 0);
@@ -318,9 +318,9 @@ class TupleDeclNode extends DeclNode {
     public void unparse(PrintWriter p, int indent) {
 		doIndent(p, indent);
 		p.print("tuple ");
-		myId.unparse(p, indent + 1);
+		myId.unparse(p, indent + 5);
 		p.print(" {\n");
-		myDeclList.unparse(p, indent + 1);
+		myDeclList.unparse(p, indent + 5);
 		doIndent(p, indent);
 		p.print("}\n");
     }
@@ -392,7 +392,7 @@ class AssignStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		myAssign.unparse(p, ident);
+		myAssign.unparse(p, indent);
     }
 
     // 1 child
@@ -405,7 +405,7 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		myExp.unparse(p, ident);
+		myExp.unparse(p, indent);
 		p.print("++");
     }
 
@@ -419,7 +419,7 @@ class PostDecStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		myExp.unparse(p, ident);
+		myExp.unparse(p, indent);
 		p.print("--");
     }
 
@@ -435,7 +435,8 @@ class IfStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		p.print(doIndent(indent) + "if ");
+		doIndent(p, indent);
+		p.print("if ");
 		
 		myExp.unparse(p, 0);
 		p.print(" [\n");
@@ -443,7 +444,8 @@ class IfStmtNode extends StmtNode {
 		myDeclList.unparse(p, indent + 5);
 		myStmtList.unparse(p, indent + 5);
 	
-		p.print"\n" + (doIndent(indent) + "]");
+		doIndent(p, indent);
+		p.print("]\n");
     }
 
     // 3 children
@@ -465,25 +467,27 @@ class IfElseStmtNode extends StmtNode {
 
     public void unparse(PrintWriter p, int indent) {
 		// if part
-		doIndent(indent);
+		doIndent(p, indent);
 		p.print("if ");
 
-        exp.unparse(p, 0);
+        myExp.unparse(p, 0);
 		p.print(" [\n");
 
         myThenDeclList.unparse(p, indent + 5);
         myThenStmtList.unparse(p, indent + 5);
 
-        p.print"\n" + (doIndent(indent) + "]");
+		doIndent(p, indent);
+        p.print("]\n");
 		
 		// else part
-		doIndent(indent);
+		doIndent(p, indent);
 		p.print("else [\n");
 
 		myElseDeclList.unparse(p, indent + 5);
 		myElseStmtList.unparse(p, indent + 5);		
-
-		p.print(doIndent(ident) + "]");
+		
+		doIndent(p, indent);
+		p.print("]\n");
     }
 
     // 5 children
@@ -502,7 +506,7 @@ class WhileStmtNode extends StmtNode {
     }
 	
     public void unparse(PrintWriter p, int indent) {
-		doIndent(indent);
+		doIndent(p, indent);
 		p.print("while ");
 		myExp.unparse(p, 0); 
 		p.print("[\n");
@@ -525,9 +529,9 @@ class ReadStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		doIndent(indent);
+		doIndent(p, indent);
 		p.print("read >> ");
-		exp.unparse(p, 0);
+		myExp.unparse(p, 0);
     }
 
     // 1 child (actually can only be an IdNode or a TupleAccessNode)
@@ -540,7 +544,7 @@ class WriteStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		doIndent(indent);
+		doIndent(p, indent);
 		p.print("write << ");
 		myExp.unparse(p, 0);
     }
@@ -568,7 +572,7 @@ class ReturnStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-		doIndent(indent);
+		doIndent(p, indent);
 		p.print("return ");
 		myExp.unparse(p, 0);
     }
@@ -636,7 +640,7 @@ class IntLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-	p.print(myIntVal);
+		p.print(myIntVal);
     }
 
     private int myLineNum;
@@ -652,7 +656,7 @@ class StringLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-	p.print(myStrVal);
+		p.print(myStrVal);
     }
 
     private int myLineNum;
@@ -667,7 +671,7 @@ class TupleAccessExpNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-	loc.unparse(p, 0);
+	myLoc.unparse(p, 0);
 	p.print(":");
 	myId.unparse(p, 0);
     }
@@ -684,11 +688,11 @@ class AssignExpNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-	p.print("(");
+		p.print("(");
     	myLhs.unparse(p, 0);
-	p.print(" = ");
-	myExp.unparse(p, 0);
-	p.print(")");
+		p.print(" = ");
+		myExp.unparse(p, 0);
+		p.print(")");
     }
 
     // 2 children
@@ -712,7 +716,7 @@ class CallExpNode extends ExpNode {
 		// id ()
 		// id ( actualList )
 
-		doIndent(indent);
+		doIndent(p, indent);
 		myId.unparse(p, 0);
 		p.print(" (");
 		
@@ -928,7 +932,7 @@ class AndNode extends BinaryExpNode {
     public void unparse(PrintWriter p, int indent) {
     	p.print("(");
 	myExp1.unparse(p, 0);
-	p.print(" && ");
+	p.print(" & ");
 	myExp2.unparse(p, 0);
 	p.print(")");
     }
@@ -942,7 +946,7 @@ class OrNode extends BinaryExpNode {
     public void unparse(PrintWriter p, int indent) {
 	p.print("(");
 	myExp1.unparse(p, 0);
-	p.print(" || ");
+	p.print(" | ");
 	myExp2.unparse(p, 0);
 	p.print(")");
     }
