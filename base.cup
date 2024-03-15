@@ -29,8 +29,8 @@ terminal                INTEGER;
 terminal                LOGICAL;
 terminal                VOID;
 terminal                TUPLE;
-terminal                TRUE;
-terminal                FALSE;
+terminal TokenVal       TRUE;
+terminal TokenVal       FALSE;
 terminal IdTokenVal     ID;
 terminal IntLitTokenVal INTLITERAL;
 terminal StrLitTokenVal STRLITERAL;
@@ -102,7 +102,7 @@ non terminal ExpNode		  term;
 precedence right ASSIGN;
 precedence left OR;
 precedence left AND;
-precedence nonassoc EQUALS, NOTEQUALS, GREATER, GREATEREQ, LESS, LESSEQ, COLON;
+precedence nonassoc EQUALS, NOTEQUALS, GREATER, GREATEREQ, LESS, LESSEQ;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
 precedence left PLUSPLUS, MINUSMINUS;
@@ -110,6 +110,7 @@ precedence nonassoc NOT;
 precedence nonassoc TRUE, FALSE, ID;
 precedence nonassoc INTLITERAL, STRLITERAL;
 precedence left LPAREN;
+precedence nonassoc COLON;
 
 start with program;
 
@@ -315,11 +316,11 @@ loc				::= id:i
 term			::= loc:l
 				{: RESULT = l;
 				:}
-				| TRUE
-				{: RESULT = new TrueNode();
+				| TRUE:t
+				{: RESULT = new TrueNode(t.lineNum, t.charNum);
 				:}
-				| FALSE
-				{: RESULT = new FalseNode();
+				| FALSE:f
+				{: RESULT = new FalseNode(f.lineNum, f.charNum);
 				:}
 				| INTLITERAL:i
                 {: RESULT = new IntLitNode(i.lineNum, i.charNum, i.intVal);

@@ -671,8 +671,9 @@ class TupleAccessExpNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+	p.print("(");
 	myLoc.unparse(p, 0);
-	p.print(":");
+	p.print("):");
 	myId.unparse(p, 0);
     }
 
